@@ -1,5 +1,7 @@
 Decisões tomadas no código
 
+- O cenário aqui é um **Worker Service** em background (muito comum para processar filas, inventário de loja, entrega de itens de jogos) que chama um serviço externo instável. Se a chamada falhar (por timeout ou queda de rede), não podemos simplesmente desistir ou crashar o worker: precisamos aplicar **Retry com Exponential Backoff** e registrar tudo em logs estruturados que permitam rastrear a execução.
+
 -------------------
 
 A. O CorrelationId (Guid.NewGuid().ToString())
