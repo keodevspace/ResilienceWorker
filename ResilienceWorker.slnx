@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="ResilienceWorkerApp.Tests/ResilienceWorkerApp.Tests.csproj" />
   <Project Path="ResilienceWorkerApp/ResilienceWorkerApp.csproj" />
 </Solution>
