@@ -90,3 +90,63 @@ public class Program
         Console.WriteLine(JsonSerializer.Serialize(logEntry));
     }
 }
+
+
+// ou
+// using System;
+// using System.Threading.Tasks;
+
+// public class Program
+// {
+//     private static int _tentativas = 0;
+
+//     public static async Task Main()
+//     {
+//         string correlationId = Guid.NewGuid().ToString();
+
+//         Console.WriteLine($"[INFO] Iniciando processamento. ID: {correlationId}");
+
+//         // Executa a chamada com no máximo 3 tentativas
+//         bool sucesso = await ExecutarComRetry(maxTentativas: 3, correlationId);
+
+//         Console.WriteLine($"[INFO] Resultado final: {(sucesso ? "Sucesso" : "Falha")}");
+//     }
+
+//     // 1. O RETRY COMPACTO (O que o entrevistador quer ver)
+//     private static async Task<bool> ExecutarComRetry(int maxTentativas, string correlationId)
+//     {
+//         for (int i = 1; i <= maxTentativas; i++)
+//         {
+//             try
+//             {
+//                 Console.WriteLine($"[DEBUG] Tentativa {i} de {maxTentativas}...");
+                
+//                 ChamarApiInstavel(); // Tenta executar a ação
+                
+//                 Console.WriteLine($"[INFO] Sucesso na tentativa {i}!");
+//                 return true; // Deu certo, sai da função
+//             }
+//             catch (Exception ex)
+//             {
+//                 Console.WriteLine($"[WARN] Falha na tentativa {i}: {ex.Message}");
+
+//                 // Espera simples dobrando o tempo: 1s, 2s, 4s...
+//                 int tempoEsperaMs = i * 1000; 
+//                 await Task.Delay(tempoEsperaMs);
+//             }
+//         }
+
+//         Console.WriteLine("[ERROR] Todas as tentativas falharam.");
+//         return false;
+//     }
+
+//     // 2. A API FAKE (Simula erro nas 2 primeiras vezes)
+//     private static void ChamarApiInstavel()
+//     {
+//         _tentativas++;
+//         if (_tentativas < 3)
+//         {
+//             throw new Exception("Falha de conexão com a API.");
+//         }
+//     }
+// }
