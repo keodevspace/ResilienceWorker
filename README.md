@@ -49,3 +49,24 @@ D. Logs Estruturados em JSON (JsonSerializer.Serialize(logEntry))
 Linha: Console.WriteLine(JsonSerializer.Serialize(logEntry));
 
 Por que foi feita: Logs em texto puro (Console.WriteLine("Erro ao conectar")) são impossíveis de filtrar em ferramentas de observabilidade como Datadog, AWS CloudWatch ou Kibana. Ao transformar o log em um objeto JSON estruturado contendo Timestamp, Level, CorrelationId e Message, você permite que a ferramenta crie filtros automáticos, gráficos de erros e alertas inteligentes (ex: "disparar alerta se o nível ERROR com o mesmo CorrelationId acontecer mais de 5 vezes").
+
+-------------------
+### Resumo
+
+**O Loop de Retry:**    
+    ```
+    for (int i = 1; i <= maxTentativas; i++) { ... }
+    ```
+    
+2. **O Tratameno com Try/Catch:**
+  
+    ```
+    try { 
+        Acao(); 
+        return true; 
+    } catch { 
+        await Task.Delay(i * 1000); 
+    }
+    ```
+    
+3. **O Retorno de Falha:** Fora do loop, retorne `false` (significa que esgotou o `for` sem dar `return true`).
