@@ -1,7 +1,22 @@
-Decisões tomadas no código
+### Decisões tomadas no código
 
 - O cenário aqui é um **Worker Service** em background (muito comum para processar filas, inventário de loja, entrega de itens de jogos) que chama um serviço externo instável. Se a chamada falhar (por timeout ou queda de rede), não podemos simplesmente desistir ou crashar o worker: precisamos aplicar **Retry com Exponential Backoff** e registrar tudo em logs estruturados que permitam rastrear a execução.
 - console o fluxo rodando: ele vai tentar, falhar nas duas primeiras com nível WARN, esperar o tempo do backoff e suceder na terceira tentativa, imprimindo cada passo em um JSON estruturado!
+
+### Worker de Log Estruturado e Retry Pattern
+
+- **O Problema:** Worker que chama API externa/banco instável e falha por timeout. Se desistir, o job morre; se tentar em massa sem pausa, vira um DDoS interno.
+    
+- **A Solução:** **Retry com Exponential Backoff** + **Logs Estruturados**.
+    
+
+### 📝 Passo a Passo & Decisões no Código
+
+1. **CorrelationId:** UUID gerado na ponta para "carimbar" e rastrear os logs do job por todo o fluxo de microsserviços.
+    
+2. **Exponential Backoff (`Math.Pow(2, attempt) * 250`):** O tempo de espera dobra a cada falha (500ms $\rightarrow$ 1s $\rightarrow$ 2s). Dá tempo para o serviço instável respirar.
+    
+3. **Logs em JSON Puro:** Serialização de objetos (`Timestamp`, `Level`, `CorrelationId`, `Message`) para indexação automática em ferramentas como Datadog, ELK ou CloudWatch (adeus "achismo" em produção).
 
 -------------------
 
